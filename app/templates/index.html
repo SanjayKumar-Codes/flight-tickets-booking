@@ -1,0 +1,119 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+
+    <title>Flight Demand Trends</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+    <script type="text/javascript">
+      google.charts.load('current', {packages: ['corechart', 'bar']});
+      google.charts.setOnLoadCallback(drawChart);
+
+      function drawChart() {
+        var data = google.visualization.arrayToDataTable([
+          ['Country', 'Flights'],
+          {% set top_countries = insights.flights_per_country.items() | list %}
+          {% for country, count in top_countries[:5] %}
+            ['{{ country }}', {{ count }}],
+          {% endfor %}
+        ]);
+
+        var options = {
+          title: 'Top 5 Countries by Flight Count',
+          chartArea: {width: '50%'},
+          hAxis: {
+            title: 'Total Flights',
+            minValue: 0
+          },
+          vAxis: {
+            title: 'Country'
+          }
+        };
+
+        var chart = new google.visualization.BarChart(document.getElementById('barchart_div'));
+        chart.draw(data, options);
+      }
+    </script>
+</head>
+<body>
+    <h1>Flight Demand Trends</h1>
+
+    <h2>Total Flights Tracked: {{ insights.total_flights }}</h2>
+
+    <h3>Flights On Ground vs In Air: </h3>
+    <ul>
+        <li >On Ground: {{ insights.on_ground_status.on_ground }}</li>
+        <li>In Air: {{ insights.on_ground_status.in_air }}</li>
+    </ul>
+
+    <div id="barchart_div" style="width: 700px; height: 400px;"></div>
+
+    <h3>Top 5 High-Demand Airspace Regions (Approx.):</h3>
+<table border="1" cellpadding="5">
+    <tr>
+        <th>Longitude Grid</th>
+        <th>Latitude Grid</th>
+        <th>Flight Count</th>
+    </tr>
+    {% for loc in insights.high_demand_locations %}
+    <tr>
+        <td>{{ loc.grid_lon }}</td>
+        <td>{{ loc.grid_lat }}</td>
+        <td>{{ loc.flight_count }}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+
+    <h3>Filter Flights by Origin Country:</h3>
+
+    <form method="post">
+        <select name="origin_country">
+            {% for country, count in insights.flights_per_country.items() %}
+                <option value="{{ country }}" {% if selected_country == country %}selected{% endif %}>
+                    {{ country }} ({{ count }} flights)
+                </option>
+            {% endfor %}
+        </select>
+        <button type="submit">Filter</button>
+    </form>
+
+    {% if flights %}
+    <h3>Flights from {{ selected_country }}:</h3>
+    <table border="1" cellpadding="5">
+        <tr>
+            <th>Callsign</th>
+            <th>Longitude</th>
+            <th>Latitude</th>
+        </tr>
+        {% for flight in flights %}
+        <tr>
+            <td>{{ flight.callsign }}</td>
+            <td>{{ flight.longitude }}</td>
+            <td>{{ flight.latitude }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+{% endif %}
+
+<footer>
+    <div class="footer-content">
+        <p><strong>About Us:</strong> This project is built to provide real-time airline market demand insights using open-source tools and free APIs.</p>
+        
+        <p>
+            Connect with me: 
+            <a href="https://www.linkedin.com/in/sanjay-kumarai" target="_blank">LinkedIn</a> |
+            <a href="https://www.instagram.com/your-instagram/" target="_blank">Instagram</a> |
+            Call: <a href="tel:+911234567890">+919566919120</a>
+        </p>
+        
+        <p>&copy; 2025 Sanjay Kumar M. All rights reserved.</p>
+    </div>
+</footer>
+
+
+
+</body>
+</html>
