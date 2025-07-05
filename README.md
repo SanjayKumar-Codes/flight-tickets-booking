@@ -125,6 +125,5 @@ This project is licensed under the [MIT License](https://choosealicense.com/lice
 ## 👨‍💻 Developer Contact
 
 * [LinkedIn - Sanjay Kumar](https://www.linkedin.com/in/sanjay-kumarai)
-* 📞 Call: [+91-1234567890](tel:+919566919120)
 
 **Project Link:** [https://github.com/SanjayKumar-Codes/flight-tickets-booking](https://github.com/SanjayKumar-Codes/flight-tickets-booking)
